@@ -1,0 +1,606 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CivicAI - From Complaints to Action</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+header {
+    background: #123b65;
+    color: white;
+    padding: 22px;
+    text-align: center;
+}
+
+header p {
+    margin-top: 8px;
+    color: #dbeafe;
+}
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px;
+    background: white;
+    box-shadow: 0 2px 5px #ddd;
+}
+
+nav button, button {
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    background: #1769aa;
+    color: white;
+    cursor: pointer;
+}
+
+nav button:hover, button:hover {
+    background: #0e4777;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 25px auto;
+    padding: 15px;
+}
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+h2 {
+    margin-bottom: 18px;
+    color: #123b65;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    margin-bottom: 18px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px #00000012;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 11px;
+    margin: 8px 0 15px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+}
+
+textarea {
+    min-height: 90px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stat {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    border-left: 5px solid #1769aa;
+}
+
+.stat h3 {
+    color: #1769aa;
+    font-size: 28px;
+    margin-top: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    min-width: 650px;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background: #123b65;
+    color: white;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+.priority-high {
+    color: #dc2626;
+    font-weight: bold;
+}
+
+.priority-medium {
+    color: #d97706;
+    font-weight: bold;
+}
+
+.priority-low {
+    color: #15803d;
+    font-weight: bold;
+}
+
+.bar {
+    height: 13px;
+    background: #dbeafe;
+    margin: 8px 0 15px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.bar span {
+    display: block;
+    height: 100%;
+    background: #1769aa;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background: #123b65;
+    color: white;
+    margin-top: 30px;
+}
+
+.small {
+    color: #64748b;
+    font-size: 13px;
+    margin-top: 8px;
+}
+
+@media(max-width: 600px) {
+    .container { padding: 10px; }
+    nav button { flex: 1 1 40%; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🏙️ CivicAI</h1>
+    <p>From Complaints to Action</p>
+    <p>AI-assisted Citizen Complaint Management Platform</p>
+</header>
+
+<nav>
+    <button onclick="showSection('home')">Home</button>
+    <button onclick="showSection('submit')">Submit Complaint</button>
+    <button onclick="showSection('track')">Track Complaint</button>
+    <button onclick="showSection('admin')">Admin Dashboard</button>
+    <button onclick="showSection('analysis')">Data Analysis</button>
+</nav>
+
+<div class="container">
+
+<!-- HOME -->
+<section id="home" class="section active">
+    <div class="card">
+        <h2>Welcome to CivicAI</h2>
+        <p>
+            CivicAI helps citizens report public problems and helps
+            administrators identify, prioritize and track issues.
+        </p>
+        <br>
+        <button onclick="showSection('submit')">Report a Problem</button>
+        <p id="connectionStatus" class="small" role="status">Connecting to the CivicAI server...</p>
+    </div>
+
+    <div class="stats">
+        <div class="stat">
+            Total Complaints
+            <h3 id="homeTotal">0</h3>
+        </div>
+        <div class="stat">
+            Pending
+            <h3 id="homePending">0</h3>
+        </div>
+        <div class="stat">
+            In Progress
+            <h3 id="homeProgress">0</h3>
+        </div>
+        <div class="stat">
+            Resolved
+            <h3 id="homeResolved">0</h3>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>How CivicAI Works</h2>
+        <p>1. Citizen submits a complaint.</p><br>
+        <p>2. System identifies the complaint category.</p><br>
+        <p>3. System calculates a priority score.</p><br>
+        <p>4. Repeated complaints are identified.</p><br>
+        <p>5. Administrators take action and update status.</p><br>
+        <p>6. Citizens can track their complaints.</p>
+    </div>
+</section>
+
+<!-- SUBMIT COMPLAINT -->
+<section id="submit" class="section">
+    <div class="card">
+        <h2>Submit a Citizen Complaint</h2>
+
+        <form id="complaintForm">
+            <label>Citizen Name</label>
+            <input id="name" required placeholder="Enter your name">
+
+            <label>Complaint Title</label>
+            <input id="title" required placeholder="Example: Road damaged">
+
+            <label>Complaint Description</label>
+            <textarea id="description" required
+                placeholder="Describe the problem"></textarea>
+
+            <label>Location / Area</label>
+            <input id="location" required placeholder="Enter area name">
+
+            <label>Problem Category</label>
+            <select id="category">
+                <option>Auto Detect</option>
+                <option>Drainage</option>
+                <option>Road Damage</option>
+                <option>Waste</option>
+                <option>Streetlight</option>
+                <option>Water Supply</option>
+                <option>Other</option>
+            </select>
+
+            <label>Severity</label>
+            <select id="severity">
+                <option>Normal</option>
+                <option>Critical</option>
+            </select>
+
+            <button type="submit">Submit Complaint</button>
+        </form>
+
+        <p class="small">
+            Do not enter passwords or sensitive personal information.
+        </p>
+    </div>
+</section>
+
+<!-- TRACK COMPLAINT -->
+<section id="track" class="section">
+    <div class="card">
+        <h2>Track Your Complaint</h2>
+        <input id="trackId" placeholder="Enter complaint ID">
+        <button onclick="trackComplaint()">Track</button>
+        <div id="trackResult"></div>
+    </div>
+</section>
+
+<!-- ADMIN DASHBOARD -->
+<section id="admin" class="section">
+    <h2>Administrator Dashboard</h2>
+
+    <div class="stats">
+        <div class="stat">Total<h3 id="adminTotal">0</h3></div>
+        <div class="stat">Pending<h3 id="adminPending">0</h3></div>
+        <div class="stat">In Progress<h3 id="adminProgress">0</h3></div>
+        <div class="stat">Resolved<h3 id="adminResolved">0</h3></div>
+    </div>
+
+    <div class="card">
+        <h2>Manage Complaints</h2>
+        <input id="searchBox" placeholder="Search by ID, title or location"
+            oninput="renderComplaints()">
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Complaint</th>
+                        <th>Location</th>
+                        <th>Department</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Update</th>
+                    </tr>
+                </thead>
+                <tbody id="complaintTable"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- DATA ANALYSIS -->
+<section id="analysis" class="section">
+    <h2>Complaint Data Analysis</h2>
+
+    <div class="card">
+        <h2>Department Analysis</h2>
+        <div id="departmentAnalysis"></div>
+    </div>
+
+    <div class="card">
+        <h2>Location Hotspots</h2>
+        <div id="hotspotAnalysis"></div>
+    </div>
+
+    <div class="card">
+        <h2>Priority Insights</h2>
+        <div id="insights"></div>
+    </div>
+</section>
+
+</div>
+
+<footer>
+    <p>© 2026 CivicAI | From Complaints to Action</p>
+</footer>
+
+<script>
+let complaints = [];
+const statuses = ["Submitted", "Under Review", "Assigned", "In Progress", "Resolved"];
+const $ = id => document.getElementById(id);
+
+async function api(url, options = {}) {
+    const response = await fetch(url, options);
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.error || `Request failed (${response.status})`);
+    }
+    return data;
+}
+
+function showSection(id) {
+    document.querySelectorAll(".section").forEach(section => {
+        section.classList.remove("active");
+    });
+
+    $(id).classList.add("active");
+    refreshDashboard();
+}
+
+function setMessage(message) {
+    $("connectionStatus").textContent = message;
+}
+
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[character]);
+}
+
+function dateText(value) {
+    if (!value) return "Unknown";
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? escapeHTML(value) : escapeHTML(date.toLocaleString());
+}
+
+async function loadComplaints() {
+    try {
+        complaints = await api("/api/reports");
+        setMessage("Connected to the server. Reports are shared with the CivicAI dashboard.");
+        refreshDashboard();
+    } catch (error) {
+        setMessage(`Could not load reports: ${error.message}. Start the backend with npm start.`);
+        console.error("Could not load reports from the CivicAI API.", error);
+    }
+}
+
+// SUBMIT COMPLAINT
+ $("complaintForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
+    const form = this;
+    const button = form.querySelector('button[type="submit"]');
+    const selectedCategory = $("category").value;
+    button.disabled = true;
+    button.textContent = "Submitting...";
+
+    try {
+        const report = await api("/api/reports", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                citizenName: $("name").value.trim(),
+                title: $("title").value.trim(),
+                description: $("description").value.trim(),
+                location: $("location").value.trim(),
+                category: selectedCategory === "Auto Detect" ? "" : selectedCategory,
+                severity: $("severity").value
+            })
+        });
+        complaints = await api("/api/reports");
+        refreshDashboard();
+        form.reset();
+        setMessage(`Report ${report.id} submitted successfully.`);
+        showSection("track");
+        $("trackId").value = report.id;
+        await trackComplaint();
+    } catch (error) {
+        setMessage(`Could not submit the report: ${error.message}`);
+        console.error("Could not submit a report to the CivicAI API.", error);
+    } finally {
+        button.disabled = false;
+        button.textContent = "Submit Complaint";
+    }
+});
+
+// TRACK COMPLAINT
+async function trackComplaint() {
+    const id = $("trackId").value.trim().toUpperCase();
+    const result = $("trackResult");
+    result.textContent = "Looking up your report...";
+    try {
+        const allReports = await api("/api/reports");
+        const report = allReports.find(item => item.id.toUpperCase() === id);
+        if (!report) {
+            result.textContent = "Report not found. Check the ID and try again.";
+            return;
+        }
+
+        result.innerHTML = `
+            <div class="card">
+                <h3>${escapeHTML(report.title)}</h3>
+                <p><b>ID:</b> ${escapeHTML(report.id)}</p>
+                <p><b>Category:</b> ${escapeHTML(report.category)}</p>
+                <p><b>Location:</b> ${escapeHTML(report.location)}</p>
+                <p><b>Priority:</b> ${escapeHTML(report.priority)} (${escapeHTML(report.score)}/100)</p>
+                <p><b>Status:</b> ${escapeHTML(report.status)}</p>
+                <p><b>Submitted:</b> ${dateText(report.createdAt)}</p>
+                <p><b>Priority explanation:</b> ${escapeHTML((report.reasons || []).join(" "))}</p>
+                ${report.duplicateOf ? `<p><b>Possible duplicate:</b> ${escapeHTML(report.duplicateOf)}</p>` : ""}
+            </div>
+        `;
+    } catch (error) {
+        result.textContent = `Could not look up the report: ${error.message}`;
+        console.error("Could not retrieve a report from the CivicAI API.", error);
+    }
+}
+
+// ADMIN TABLE
+function renderComplaints() {
+    const search = $("searchBox").value.trim().toLowerCase();
+    const filtered = complaints.filter(report =>
+        [report.id, report.title, report.location, report.category]
+            .some(value => String(value || "").toLowerCase().includes(search))
+    );
+
+    $("complaintTable").innerHTML =
+        filtered.map(report => `
+            <tr>
+                <td>${escapeHTML(report.id)}</td>
+                <td>${escapeHTML(report.title)}</td>
+                <td>${escapeHTML(report.location)}</td>
+                <td>${escapeHTML(report.category)}</td>
+                <td class="priority-${["Critical", "High"].includes(report.priority) ? "high" : String(report.priority || "Low").toLowerCase()}">
+                    ${escapeHTML(report.priority)} (${escapeHTML(report.score)})
+                </td>
+                <td>${escapeHTML(report.status)}</td>
+                <td>
+                    <select data-report-id="${escapeHTML(report.id)}" aria-label="Update status for ${escapeHTML(report.id)}">
+                        ${statuses.map(status => `<option value="${status}" ${report.status === status ? "selected" : ""}>${status}</option>`).join("")}
+                    </select>
+                </td>
+            </tr>
+        `).join("");
+}
+
+// UPDATE STATUS
+async function updateStatus(id, status) {
+    try {
+        await api(`/api/reports/${encodeURIComponent(id)}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status })
+        });
+        complaints = await api("/api/reports");
+        refreshDashboard();
+        setMessage(`Report ${id} updated to ${status}.`);
+    } catch (error) {
+        setMessage(`Could not update report ${id}: ${error.message}`);
+        console.error(`Could not update report ${id}.`, error);
+    }
+}
+
+ $("complaintTable").addEventListener("change", event => {
+    const select = event.target.closest("select[data-report-id]");
+    if (select) updateStatus(select.dataset.reportId, select.value);
+});
+
+// DATA ANALYSIS
+function analyzeData() {
+    const departments = {};
+    const locations = {};
+
+    complaints.forEach(report => {
+        const category = report.category || "Other";
+        const location = report.location || "Unknown";
+        departments[category] = (departments[category] || 0) + 1;
+        locations[location] = (locations[location] || 0) + 1;
+    });
+
+    $("departmentAnalysis").innerHTML =
+        Object.entries(departments).map(([name, count]) => `
+            <p>${escapeHTML(name)}: ${count} complaints</p>
+            <div class="bar">
+                <span style="width:${count / Math.max(1, complaints.length) * 100}%"></span>
+            </div>
+        `).join("") || "<p>No data available.</p>";
+
+    $("hotspotAnalysis").innerHTML =
+        Object.entries(locations)
+        .sort((a,b) => b[1] - a[1])
+        .map(([name, count]) => `
+            <p>📍 ${escapeHTML(name)} — ${count} complaints</p>
+        `).join("") || "<p>No locations available.</p>";
+
+    const high = complaints.filter(report => ["High", "Critical"].includes(report.priority)).length;
+    const duplicates = complaints.filter(report => report.duplicateOf).length;
+    const topDepartment = Object.entries(departments).sort((a, b) => b[1] - a[1])[0]?.[0] || "None";
+    const topLocation = Object.entries(locations).sort((a, b) => b[1] - a[1])[0]?.[0] || "None";
+
+    $("insights").innerHTML = `
+        <p>High-priority complaints: <b>${high}</b></p>
+        <p>Potential duplicate reports: <b>${duplicates}</b></p>
+        <p>Most reported category: <b>${escapeHTML(topDepartment)}</b></p>
+        <p>Most reported location: <b>${escapeHTML(topLocation)}</b></p>
+    `;
+}
+
+// UPDATE ALL DASHBOARDS
+function refreshDashboard() {
+    const total = complaints.length;
+    const pending = complaints.filter(report =>
+        ["Submitted", "Under Review", "Assigned"].includes(report.status)
+    ).length;
+    const progress = complaints.filter(report => report.status === "In Progress").length;
+    const resolved = complaints.filter(report => report.status === "Resolved").length;
+
+    $("homeTotal").textContent = total;
+    $("homePending").textContent = pending;
+    $("homeProgress").textContent = progress;
+    $("homeResolved").textContent = resolved;
+
+    $("adminTotal").textContent = total;
+    $("adminPending").textContent = pending;
+    $("adminProgress").textContent = progress;
+    $("adminResolved").textContent = resolved;
+
+    renderComplaints();
+    analyzeData();
+}
+
+loadComplaints();
+</script>
+
+</body>
+</html>

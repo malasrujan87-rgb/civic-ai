@@ -1,0 +1,397 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivicAI - Admin Dashboard</title>
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: #173b63;
+            color: white;
+            padding: 25px 15px;
+            flex-shrink: 0;
+        }
+
+        .sidebar h2 {
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 13px;
+            margin-bottom: 8px;
+            border-radius: 7px;
+            text-decoration: none;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #1769aa;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            min-width: 0;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        .stat-card h3 {
+            color: #64748b;
+            font-size: 15px;
+        }
+
+        .stat-card p {
+            color: #1769aa;
+            font-size: 30px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .dashboard-section {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            overflow-x: auto;
+        }
+
+        .dashboard-section h2 {
+            text-align: left;
+            margin-bottom: 18px;
+        }
+
+        .action-select {
+            padding: 8px;
+            border: 1px solid #ccd6e0;
+            border-radius: 6px;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            padding: 9px 16px;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: #b52a37;
+        }
+
+        @media(max-width: 700px) {
+            .admin-layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .sidebar nav {
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            .main-content {
+                padding: 18px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="admin-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <h2>CivicAI Admin</h2>
+
+        <nav>
+            <a href="#dashboard" class="active">Dashboard</a>
+            <a href="#complaints">All Complaints</a>
+            <a href="#departments">Departments</a>
+            <a href="index.html">Main Website</a>
+        </nav>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <div class="topbar">
+
+            <div>
+                <h1>Admin Dashboard</h1>
+                <p>Welcome to CivicAI Complaint Management System</p>
+            </div>
+
+            <button class="logout-btn" onclick="logout()">
+                Logout
+            </button>
+
+        </div>
+
+
+        <!-- STATISTICS -->
+        <section id="dashboard">
+
+            <h2>Complaint Overview</h2>
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <h3>Total Complaints</h3>
+                    <p id="totalComplaints">0</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Pending</h3>
+                    <p id="pendingComplaints">0</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>In Progress</h3>
+                    <p id="progressComplaints">0</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Resolved</h3>
+                    <p id="resolvedComplaints">0</p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- COMPLAINT TABLE -->
+        <section class="dashboard-section" id="complaints">
+
+            <h2>Manage Citizen Complaints</h2>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Complaint ID</th>
+                            <th>Citizen Name</th>
+                            <th>Complaint</th>
+                            <th>Department</th>
+                            <th>Status</th>
+                            <th>Update Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="complaintTable">
+
+                        <tr>
+                            <td colspan="6">
+                                No complaints available yet.
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- DEPARTMENTS -->
+        <section class="dashboard-section" id="departments">
+
+            <h2>Departments</h2>
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <h3>Water Department</h3>
+                    <p>Water Issues</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Road Department</h3>
+                    <p>Road Issues</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Electricity Department</h3>
+                    <p>Power Issues</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Sanitation Department</h3>
+                    <p>Waste Issues</p>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- JAVASCRIPT -->
+<script>
+
+    // Load complaints from browser storage
+    function getComplaints() {
+        try {
+            return JSON.parse(localStorage.getItem("civicaiComplaints")) || [];
+        } catch (error) {
+            return [];
+        }
+    }
+
+    // Update dashboard statistics
+    function updateDashboard() {
+
+        const complaints = getComplaints();
+
+        document.getElementById("totalComplaints").textContent =
+            complaints.length;
+
+        document.getElementById("pendingComplaints").textContent =
+            complaints.filter(c => c.status === "Pending").length;
+
+        document.getElementById("progressComplaints").textContent =
+            complaints.filter(c => c.status === "In Progress").length;
+
+        document.getElementById("resolvedComplaints").textContent =
+            complaints.filter(c => c.status === "Resolved").length;
+
+        displayComplaints(complaints);
+    }
+
+    // Display complaint details
+    function displayComplaints(complaints) {
+
+        const table = document.getElementById("complaintTable");
+
+        table.innerHTML = "";
+
+        if (complaints.length === 0) {
+            table.innerHTML = `
+                <tr>
+                    <td colspan="6">No complaints available yet.</td>
+                </tr>
+            `;
+            return;
+        }
+
+        complaints.forEach((complaint, index) => {
+
+            const row = document.createElement("tr");
+
+            const values = [
+                complaint.id || "N/A",
+                complaint.name || "Citizen",
+                complaint.description || complaint.title || "N/A",
+                complaint.department || "Not assigned"
+            ];
+
+            values.forEach(value => {
+                const cell = document.createElement("td");
+                cell.textContent = value;
+                row.appendChild(cell);
+            });
+
+            const statusCell = document.createElement("td");
+            statusCell.textContent = complaint.status || "Pending";
+            row.appendChild(statusCell);
+
+            const actionCell = document.createElement("td");
+
+            const select = document.createElement("select");
+            select.className = "action-select";
+
+            ["Pending", "In Progress", "Resolved"].forEach(status => {
+                const option = document.createElement("option");
+                option.value = status;
+                option.textContent = status;
+                select.appendChild(option);
+            });
+
+            select.value = complaint.status || "Pending";
+
+            select.addEventListener("change", function() {
+                const allComplaints = getComplaints();
+                allComplaints[index].status = select.value;
+
+                localStorage.setItem(
+                    "civicaiComplaints",
+                    JSON.stringify(allComplaints)
+                );
+
+                updateDashboard();
+            });
+
+            actionCell.appendChild(select);
+            row.appendChild(actionCell);
+
+            table.appendChild(row);
+
+        });
+    }
+
+    // Logout
+    function logout() {
+        window.location.href = "admin_login.html";
+    }
+
+    // Load dashboard when page opens
+    updateDashboard();
+
+</script>
+
+</body>
+</html>

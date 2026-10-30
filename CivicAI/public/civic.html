@@ -1,0 +1,994 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CivicAI | From Complaints to Action</title>
+
+<style>
+:root {
+    --primary: #123b65;
+    --blue: #1769aa;
+    --light: #f1f5f9;
+    --white: #ffffff;
+    --green: #15803d;
+    --red: #dc2626;
+    --orange: #d97706;
+    --text: #1e293b;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: var(--light);
+    color: var(--text);
+}
+
+header {
+    background: var(--primary);
+    color: white;
+    padding: 25px 15px;
+    text-align: center;
+}
+
+header p {
+    margin-top: 8px;
+    color: #dbeafe;
+}
+
+nav {
+    background: white;
+    padding: 14px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    box-shadow: 0 2px 5px #0001;
+}
+
+button {
+    background: var(--blue);
+    color: white;
+    border: none;
+    padding: 11px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: .88;
+}
+
+.container {
+    max-width: 1150px;
+    margin: 25px auto;
+    padding: 0 15px;
+}
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+h2 {
+    color: var(--primary);
+    margin-bottom: 18px;
+}
+
+h3 {
+    margin-bottom: 12px;
+}
+
+.card {
+    background: white;
+    padding: 22px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px #00000010;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    margin: 8px 0 16px;
+    background: white;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+label {
+    font-weight: bold;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stat {
+    background: white;
+    border-left: 5px solid var(--blue);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.stat h3 {
+    color: var(--blue);
+    font-size: 28px;
+    margin-top: 10px;
+}
+
+.table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    min-width: 750px;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #e2e8f0;
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background: var(--primary);
+    color: white;
+}
+
+.priority-high {
+    color: var(--red);
+    font-weight: bold;
+}
+
+.priority-medium {
+    color: var(--orange);
+    font-weight: bold;
+}
+
+.priority-low {
+    color: var(--green);
+    font-weight: bold;
+}
+
+.chart-card {
+    margin-bottom: 20px;
+}
+
+.chart-row {
+    display: grid;
+    grid-template-columns: minmax(110px, 160px) 1fr 40px;
+    gap: 10px;
+    align-items: center;
+    margin: 16px 0;
+}
+
+.chart-label {
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.bar-background {
+    height: 22px;
+    background: #e2e8f0;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    width: 0;
+    background: var(--blue);
+    border-radius: 5px;
+    transition: width .4s ease;
+}
+
+.chart-value {
+    font-weight: bold;
+    text-align: right;
+}
+
+.insight {
+    padding: 12px;
+    margin: 9px 0;
+    background: #eff6ff;
+    border-left: 4px solid var(--blue);
+    border-radius: 5px;
+}
+
+.notice {
+    padding: 12px;
+    background: #fff7ed;
+    border-radius: 6px;
+    margin-top: 12px;
+}
+
+.small {
+    color: #64748b;
+    font-size: 13px;
+    margin-top: 12px;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background: var(--primary);
+    color: white;
+    margin-top: 30px;
+}
+
+@media(max-width: 600px) {
+    nav button {
+        flex: 1 1 40%;
+    }
+
+    .chart-row {
+        grid-template-columns: 90px 1fr 30px;
+        gap: 6px;
+    }
+
+    .card {
+        padding: 15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🏙️ CivicAI</h1>
+    <p>From Complaints to Action</p>
+    <p>Citizen Complaint Management and Decision Support Platform</p>
+</header>
+
+<nav>
+    <button onclick="showSection('home')">Home</button>
+    <button onclick="showSection('submit')">Submit Complaint</button>
+    <button onclick="showSection('track')">Track Complaint</button>
+    <button onclick="showSection('admin')">Admin Dashboard</button>
+    <button onclick="showSection('analysis')">Data Analysis</button>
+</nav>
+
+<main class="container">
+
+<!-- HOME -->
+<section id="home" class="section active">
+
+    <div class="card">
+        <h2>Welcome to CivicAI</h2>
+        <p>
+            CivicAI converts citizen complaints into organized,
+            prioritized and trackable actions.
+        </p>
+        <br>
+        <button onclick="showSection('submit')">
+            Report a Public Problem
+        </button>
+    </div>
+
+    <div class="stats">
+        <div class="stat">
+            Total Complaints
+            <h3 id="homeTotal">0</h3>
+        </div>
+        <div class="stat">
+            Pending
+            <h3 id="homePending">0</h3>
+        </div>
+        <div class="stat">
+            In Progress
+            <h3 id="homeProgress">0</h3>
+        </div>
+        <div class="stat">
+            Resolved
+            <h3 id="homeResolved">0</h3>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>How CivicAI Works</h2>
+        <p>1. Citizens submit public complaints.</p><br>
+        <p>2. The system identifies the relevant department.</p><br>
+        <p>3. A priority score is calculated.</p><br>
+        <p>4. Similar reports are identified.</p><br>
+        <p>5. Complaint hotspots are displayed in charts.</p><br>
+        <p>6. Administrators update action and resolution status.</p><br>
+        <p>7. Citizens track their complaint progress.</p>
+    </div>
+
+</section>
+
+<!-- SUBMIT COMPLAINT -->
+<section id="submit" class="section">
+
+    <div class="card">
+        <h2>Submit a Complaint</h2>
+
+        <form id="complaintForm">
+
+            <label for="name">Citizen Name</label>
+            <input id="name" required maxlength="80"
+                   placeholder="Enter your name">
+
+            <label for="contact">Contact Details</label>
+            <input id="contact" required maxlength="100"
+                   placeholder="Email or mobile number">
+
+            <label for="title">Complaint Title</label>
+            <input id="title" required maxlength="120"
+                   placeholder="Example: Damaged road">
+
+            <label for="description">Complaint Description</label>
+            <textarea id="description" required maxlength="1500"
+                      placeholder="Describe the public problem"></textarea>
+
+            <label for="location">Location / Area</label>
+            <input id="location" required maxlength="100"
+                   placeholder="Enter your area">
+
+            <label for="category">Department</label>
+            <select id="category">
+                <option value="Auto Detect">Auto Detect</option>
+                <option value="Water">Water</option>
+                <option value="Road">Road</option>
+                <option value="Electricity">Electricity</option>
+                <option value="Sanitation">Sanitation</option>
+                <option value="General">General</option>
+            </select>
+
+            <label for="severity">Problem Severity</label>
+            <select id="severity">
+                <option value="1">Low</option>
+                <option value="2">Medium</option>
+                <option value="3">High</option>
+            </select>
+
+            <label for="affected">Estimated People Affected</label>
+            <input id="affected" type="number"
+                   min="1" max="100000" value="1" required>
+
+            <button type="submit">Submit Complaint</button>
+        </form>
+
+        <p class="small">
+            Demo note: avoid entering sensitive personal information.
+        </p>
+    </div>
+
+</section>
+
+<!-- TRACK COMPLAINT -->
+<section id="track" class="section">
+
+    <div class="card">
+        <h2>Track Your Complaint</h2>
+
+        <label for="trackId">Complaint ID</label>
+        <input id="trackId" placeholder="Enter your complaint ID">
+
+        <button onclick="trackComplaint()">Track Complaint</button>
+
+        <div id="trackResult" aria-live="polite"></div>
+    </div>
+
+</section>
+
+<!-- ADMIN DASHBOARD -->
+<section id="admin" class="section">
+
+    <h2>Administrator Dashboard</h2>
+
+    <div class="stats">
+        <div class="stat">
+            Total
+            <h3 id="adminTotal">0</h3>
+        </div>
+        <div class="stat">
+            Pending
+            <h3 id="adminPending">0</h3>
+        </div>
+        <div class="stat">
+            In Progress
+            <h3 id="adminProgress">0</h3>
+        </div>
+        <div class="stat">
+            Resolved
+            <h3 id="adminResolved">0</h3>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Complaint Management</h2>
+
+        <input id="searchBox"
+               placeholder="Search by ID, title, area or department"
+               oninput="renderComplaints()">
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Location</th>
+                        <th>Department</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Update</th>
+                    </tr>
+                </thead>
+                <tbody id="complaintTable"></tbody>
+            </table>
+        </div>
+    </div>
+
+</section>
+
+<!-- DATA ANALYSIS -->
+<section id="analysis" class="section">
+
+    <h2>📊 CivicAI Data Analysis</h2>
+
+    <div class="card chart-card">
+        <h3>1. Department-wise Complaints</h3>
+        <div id="departmentChart"></div>
+    </div>
+
+    <div class="card chart-card">
+        <h3>2. Location-wise Complaint Hotspots</h3>
+        <div id="locationChart"></div>
+    </div>
+
+    <div class="card chart-card">
+        <h3>3. Complaint Status Analysis</h3>
+        <div id="statusChart"></div>
+    </div>
+
+    <div class="card chart-card">
+        <h3>4. Complaint Priority Analysis</h3>
+        <div id="priorityChart"></div>
+    </div>
+
+    <div class="card">
+        <h3>Important Insights</h3>
+        <div id="insights"></div>
+    </div>
+
+</section>
+
+</main>
+
+<footer>
+    <p>© 2026 CivicAI | From Complaints to Action</p>
+</footer>
+
+<script>
+"use strict";
+
+// ------------------------------------
+// 1. STORAGE
+// ------------------------------------
+
+const STORAGE_KEY = "civicaiComplaints";
+
+function getComplaints() {
+    try {
+        const data = JSON.parse(
+            localStorage.getItem(STORAGE_KEY) || "[]"
+        );
+
+        return Array.isArray(data) ? data : [];
+    } catch (error) {
+        console.error("Could not read saved complaints:", error);
+        return [];
+    }
+}
+
+function saveComplaints(data) {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        return true;
+    } catch (error) {
+        alert("Could not save data. Browser storage may be full or disabled.");
+        console.error(error);
+        return false;
+    }
+}
+
+// ------------------------------------
+// 2. SAFE HTML OUTPUT
+// ------------------------------------
+
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[character]);
+}
+
+// ------------------------------------
+// 3. NAVIGATION
+// ------------------------------------
+
+function showSection(id) {
+    document.querySelectorAll(".section").forEach(section => {
+        section.classList.remove("active");
+    });
+
+    const selected = document.getElementById(id);
+
+    if (!selected) return;
+
+    selected.classList.add("active");
+
+    refreshDashboard();
+
+    if (id === "analysis") {
+        updateCharts();
+    }
+}
+
+// ------------------------------------
+// 4. AUTOMATIC DEPARTMENT DETECTION
+// ------------------------------------
+
+function detectDepartment(text) {
+    const value = text.toLowerCase();
+
+    if (/water|leak|pipe|drinking|drainage/.test(value)) {
+        return "Water";
+    }
+
+    if (/road|pothole|street|bridge|footpath/.test(value)) {
+        return "Road";
+    }
+
+    if (/electric|power|light|wire|transformer/.test(value)) {
+        return "Electricity";
+    }
+
+    if (/garbage|waste|dustbin|sewage|clean/.test(value)) {
+        return "Sanitation";
+    }
+
+    return "General";
+}
+
+// ------------------------------------
+// 5. PRIORITY CALCULATION
+// ------------------------------------
+
+function calculatePriority(severity, affected, recurrence) {
+    const score =
+        severity * 40 +
+        Math.min(affected, 1000) / 1000 * 30 +
+        Math.min(recurrence, 5) * 6;
+
+    let level = "Low";
+
+    if (score >= 95) {
+        level = "High";
+    } else if (score >= 60) {
+        level = "Medium";
+    }
+
+    return {
+        level: level,
+        score: Math.round(score)
+    };
+}
+
+// ------------------------------------
+// 6. COMPLAINT SUBMISSION
+// ------------------------------------
+
+document.getElementById("complaintForm")
+.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    const complaints = getComplaints();
+
+    const name = document.getElementById("name").value.trim();
+    const contact = document.getElementById("contact").value.trim();
+    const title = document.getElementById("title").value.trim();
+    const description = document.getElementById("description").value.trim();
+    const location = document.getElementById("location").value.trim();
+    const category = document.getElementById("category").value;
+    const severity = Number(document.getElementById("severity").value);
+    const affected = Number(document.getElementById("affected").value);
+
+    if (!name || !contact || !title || !description || !location) {
+        alert("Please fill in all required fields.");
+        return;
+    }
+
+    if (!Number.isInteger(affected) || affected < 1 || affected > 100000) {
+        alert("Enter a valid number of people affected.");
+        return;
+    }
+
+    const department = category === "Auto Detect"
+        ? detectDepartment(title + " " + description)
+        : category;
+
+    // Find similar complaints in the same area and department.
+    const duplicate = complaints.find(c =>
+        c.location.toLowerCase() === location.toLowerCase() &&
+        c.department === department &&
+        (
+            c.title.toLowerCase() === title.toLowerCase() ||
+            c.description.toLowerCase() === description.toLowerCase()
+        )
+    );
+
+    const recurrence = complaints.filter(c =>
+        c.location.toLowerCase() === location.toLowerCase() &&
+        c.department === department
+    ).length;
+
+    const priority = calculatePriority(
+        severity,
+        affected,
+        recurrence
+    );
+
+    const id = "CIVIC-" + Date.now();
+
+    const complaint = {
+        id,
+        name,
+        contact,
+        title,
+        description,
+        location,
+        department,
+        severity,
+        affected,
+        recurrence,
+        priority: priority.level,
+        score: priority.score,
+        reason:
+            "Calculated from problem severity, estimated affected population and repeated reports.",
+        status: "Pending",
+        duplicateOf: duplicate ? duplicate.id : null,
+        date: new Date().toLocaleString()
+    };
+
+    complaints.push(complaint);
+
+    if (!saveComplaints(complaints)) return;
+
+    alert(
+        "Complaint submitted successfully!\n\n" +
+        "Your Complaint ID: " + id +
+        (duplicate
+            ? "\nA similar complaint was found: " + duplicate.id
+            : "")
+    );
+
+    this.reset();
+
+    document.getElementById("trackId").value = id;
+
+    showSection("track");
+    trackComplaint();
+});
+
+// ------------------------------------
+// 7. CITIZEN COMPLAINT TRACKING
+// ------------------------------------
+
+function trackComplaint() {
+    const id = document.getElementById("trackId").value.trim();
+
+    const complaint = getComplaints().find(c =>
+        c.id.toLowerCase() === id.toLowerCase()
+    );
+
+    const result = document.getElementById("trackResult");
+
+    if (!complaint) {
+        result.textContent = "Complaint not found. Please check the ID.";
+        return;
+    }
+
+    result.innerHTML = `
+        <div class="card">
+            <h3>${escapeHTML(complaint.title)}</h3>
+            <p><b>Complaint ID:</b> ${escapeHTML(complaint.id)}</p>
+            <p><b>Department:</b> ${escapeHTML(complaint.department)}</p>
+            <p><b>Location:</b> ${escapeHTML(complaint.location)}</p>
+            <p><b>Priority:</b> ${escapeHTML(complaint.priority)}</p>
+            <p><b>Priority Score:</b> ${complaint.score}</p>
+            <p><b>Status:</b> ${escapeHTML(complaint.status)}</p>
+            <p><b>Submitted:</b> ${escapeHTML(complaint.date)}</p>
+            <p><b>Explanation:</b> ${escapeHTML(complaint.reason)}</p>
+            ${
+                complaint.duplicateOf
+                ? `<p><b>Similar report:</b> ${escapeHTML(complaint.duplicateOf)}</p>`
+                : ""
+            }
+        </div>
+    `;
+}
+
+// ------------------------------------
+// 8. ADMIN COMPLAINT TABLE
+// ------------------------------------
+
+function renderComplaints() {
+    const complaints = getComplaints();
+
+    const search = (
+        document.getElementById("searchBox").value || ""
+    ).toLowerCase();
+
+    const filtered = complaints.filter(c =>
+        [c.id, c.title, c.location, c.department].some(value =>
+            String(value).toLowerCase().includes(search)
+        )
+    );
+
+    const table = document.getElementById("complaintTable");
+
+    if (filtered.length === 0) {
+        table.innerHTML =
+            '<tr><td colspan="7">No complaints found.</td></tr>';
+        return;
+    }
+
+    table.innerHTML = filtered.map(c => `
+        <tr>
+            <td>${escapeHTML(c.id)}</td>
+            <td>${escapeHTML(c.title)}</td>
+            <td>${escapeHTML(c.location)}</td>
+            <td>${escapeHTML(c.department)}</td>
+            <td class="priority-${c.priority.toLowerCase()}">
+                ${escapeHTML(c.priority)} (${c.score})
+            </td>
+            <td>${escapeHTML(c.status)}</td>
+            <td>
+                <select onchange="updateStatus('${escapeHTML(c.id)}', this.value)">
+                    <option value="">Choose status</option>
+                    <option value="Pending">Pending</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Resolved">Resolved</option>
+                </select>
+            </td>
+        </tr>
+    `).join("");
+}
+
+// ------------------------------------
+// 9. UPDATE COMPLAINT STATUS
+// ------------------------------------
+
+function updateStatus(id, status) {
+    if (!status) return;
+
+    const complaints = getComplaints();
+
+    const complaint = complaints.find(c => c.id === id);
+
+    if (!complaint) return;
+
+    complaint.status = status;
+
+    if (!saveComplaints(complaints)) return;
+
+    refreshDashboard();
+
+    if (document.getElementById("analysis").classList.contains("active")) {
+        updateCharts();
+    }
+
+    if (document.getElementById("trackId").value.trim() === id) {
+        trackComplaint();
+    }
+}
+
+// ------------------------------------
+// 10. REUSABLE BAR CHART FUNCTION
+// ------------------------------------
+
+function drawBarChart(elementId, entries) {
+    const container = document.getElementById(elementId);
+
+    if (!entries.length) {
+        container.innerHTML = "<p>No complaint data available yet.</p>";
+        return;
+    }
+
+    const maximum = Math.max(...entries.map(item => item.count), 1);
+
+    container.innerHTML = entries.map(item => {
+        const percentage = item.count / maximum * 100;
+
+        return `
+            <div class="chart-row">
+                <div class="chart-label">
+                    ${escapeHTML(item.label)}
+                </div>
+
+                <div class="bar-background">
+                    <div class="bar-fill"
+                         style="width:${percentage}%">
+                    </div>
+                </div>
+
+                <div class="chart-value">
+                    ${item.count}
+                </div>
+            </div>
+        `;
+    }).join("");
+}
+
+// ------------------------------------
+// 11. UPDATE ALL BAR CHARTS
+// ------------------------------------
+
+function updateCharts() {
+    const complaints = getComplaints();
+
+    const departments = {};
+    const locations = {};
+
+    complaints.forEach(c => {
+        departments[c.department] =
+            (departments[c.department] || 0) + 1;
+
+        locations[c.location] =
+            (locations[c.location] || 0) + 1;
+    });
+
+    // Department analysis
+    const departmentData = Object.entries(departments)
+        .map(([label, count]) => ({label, count}))
+        .sort((a, b) => b.count - a.count);
+
+    drawBarChart("departmentChart", departmentData);
+
+    // Location hotspot analysis
+    const locationData = Object.entries(locations)
+        .map(([label, count]) => ({label, count}))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 10);
+
+    drawBarChart("locationChart", locationData);
+
+    // Status analysis
+    const statuses = ["Pending", "In Progress", "Resolved"];
+
+    const statusData = statuses.map(label => ({
+        label,
+        count: complaints.filter(c => c.status === label).length
+    }));
+
+    drawBarChart("statusChart", statusData);
+
+    // Priority analysis
+    const priorities = ["High", "Medium", "Low"];
+
+    const priorityData = priorities.map(label => ({
+        label,
+        count: complaints.filter(c => c.priority === label).length
+    }));
+
+    drawBarChart("priorityChart", priorityData);
+
+    // Additional insights
+    const highPriority = complaints.filter(
+        c => c.priority === "High"
+    ).length;
+
+    const duplicateCount = complaints.filter(
+        c => c.duplicateOf
+    ).length;
+
+    const resolvedCount = complaints.filter(
+        c => c.status === "Resolved"
+    ).length;
+
+    const mostDepartment = departmentData[0]?.label || "None";
+    const mostLocation = locationData[0]?.label || "None";
+
+    document.getElementById("insights").innerHTML = `
+        <div class="insight">
+            Total complaints: <b>${complaints.length}</b>
+        </div>
+
+        <div class="insight">
+            High-priority complaints: <b>${highPriority}</b>
+        </div>
+
+        <div class="insight">
+            Potential duplicate reports: <b>${duplicateCount}</b>
+        </div>
+
+        <div class="insight">
+            Resolved complaints: <b>${resolvedCount}</b>
+        </div>
+
+        <div class="insight">
+            Most reported department: <b>${escapeHTML(mostDepartment)}</b>
+        </div>
+
+        <div class="insight">
+            Highest complaint hotspot: <b>${escapeHTML(mostLocation)}</b>
+        </div>
+    `;
+}
+
+// ------------------------------------
+// 12. REFRESH DASHBOARD
+// ------------------------------------
+
+function refreshDashboard() {
+    const complaints = getComplaints();
+
+    const total = complaints.length;
+
+    const pending = complaints.filter(
+        c => c.status === "Pending"
+    ).length;
+
+    const progress = complaints.filter(
+        c => c.status === "In Progress"
+    ).length;
+
+    const resolved = complaints.filter(
+        c => c.status === "Resolved"
+    ).length;
+
+    // Home statistics
+    document.getElementById("homeTotal").textContent = total;
+    document.getElementById("homePending").textContent = pending;
+    document.getElementById("homeProgress").textContent = progress;
+    document.getElementById("homeResolved").textContent = resolved;
+
+    // Admin statistics
+    document.getElementById("adminTotal").textContent = total;
+    document.getElementById("adminPending").textContent = pending;
+    document.getElementById("adminProgress").textContent = progress;
+    document.getElementById("adminResolved").textContent = resolved;
+
+    renderComplaints();
+}
+
+// ------------------------------------
+// 13. INITIAL APPLICATION LOAD
+// ------------------------------------
+
+refreshDashboard();
+
+</script>
+
+</body>
+</html>
+

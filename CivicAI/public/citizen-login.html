@@ -1,0 +1,217 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CivicAI - Citizen Login</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #123456, #2878a8);
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            width: 100%;
+            max-width: 420px;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .logo {
+            text-align: center;
+            color: #1769aa;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #222;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #777;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 7px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #1769aa;
+        }
+
+        .forgot {
+            display: block;
+            text-align: right;
+            margin-top: 10px;
+            color: #1769aa;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 22px;
+            border: none;
+            border-radius: 7px;
+            background: #1769aa;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #104d80;
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #b42318;
+        }
+
+        .register {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 14px;
+        }
+
+        a {
+            color: #1769aa;
+            text-decoration: none;
+        }
+
+        .back-home {
+            display: block;
+            text-align: center;
+            margin-top: 18px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <div class="logo">CivicAI</div>
+
+        <h2>Citizen Login</h2>
+
+        <p class="subtitle">
+            From Complaints to Action
+        </p>
+
+        <form id="citizenLoginForm">
+
+            <label for="email">Email ID</label>
+
+            <input
+                type="email"
+                id="email"
+                placeholder="Enter your registered email"
+                required
+            >
+
+            <label for="password">Password</label>
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+                required
+            >
+
+            <a href="#" class="forgot" id="forgotPassword">
+                Forgot Password?
+            </a>
+
+            <button type="submit">
+                Login
+            </button>
+
+            <p class="message" id="message"></p>
+
+        </form>
+
+        <div class="register">
+            Don't have an account?
+            <a href="citizen_register.html">Register Here</a>
+        </div>
+
+        <a href="index.html" class="back-home">
+            Back to Home
+        </a>
+
+    </div>
+
+    <script>
+        const loginForm =
+            document.getElementById("citizenLoginForm");
+
+        loginForm.addEventListener("submit", function(event) {
+
+            event.preventDefault();
+
+            document.getElementById("message").textContent =
+                "Login system is not connected yet. Firebase authentication setup is required.";
+        });
+
+        document.getElementById("forgotPassword")
+            .addEventListener("click", function(event) {
+
+                event.preventDefault();
+
+                document.getElementById("message").textContent =
+                    "Password recovery will be available after Firebase setup.";
+            });
+    </script>
+
+</body>
+</html>
+
+<p>Don't have an account?</p>
+
+<a href="citizen_register.html">
+    Register Here
+</a>
+
+<br><br>
+
+<a href="index.html">Back to Home</a>

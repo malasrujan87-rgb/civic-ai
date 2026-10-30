@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CivicAI | From Complaints to Action</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#"><span class="brand-mark">C</span><span>Civic<span class="brand-ai">AI</span><small>SMART CIVIC ACTION</small></span></a>
+      <div class="side-label">WORKSPACE</div>
+      <button class="nav-link active" data-view="overview"><span>▦</span> Overview</button>
+      <button class="nav-link" data-view="complaints"><span>▤</span> Complaints <b id="navCount">0</b></button>
+      <button class="nav-link" data-view="map"><span>⌖</span> Issue map</button>
+      <button class="nav-link" data-view="submit"><span>＋</span> Report an issue</button>
+      <button class="nav-link" data-view="track"><span>◎</span> Track report</button>
+      <div class="side-bottom">
+        <div class="help-card"><div class="help-icon">✦</div><strong>AI-powered civic action</strong><p>Turning community reports into clear, prioritized work.</p></div>
+        <div class="profile"><div class="avatar">AD</div><div><strong>Demo Admin</strong><small>City operations</small></div><span class="online-dot"></span></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div><div class="eyebrow">CIVIC OPERATIONS / <span id="crumb">OVERVIEW</span></div><h1 id="pageTitle">Good morning, Admin <span>✦</span></h1></div>
+        <div class="top-actions"><span class="live-pill"><i></i> Prototype live</span><button class="primary-btn small" id="topReport">＋ New report</button></div>
+      </header>
+
+      <section class="view active" id="view-overview">
+        <div class="welcome-banner">
+          <div><div class="banner-kicker">COMMUNITY PULSE</div><h2>See the issue. Understand the impact.<br><em>Take action.</em></h2><p>One clear view of what your community needs most.</p><button class="banner-btn" data-go="complaints">Explore complaints <span>→</span></button></div>
+          <div class="banner-art"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="city-icon">⌖</div><div class="float-card fc-one">✦ <span>AI insights</span></div><div class="float-card fc-two">↗ <span>Action tracking</span></div></div>
+        </div>
+        <div class="section-heading"><div><div class="eyebrow">AT A GLANCE</div><h2>Community overview</h2></div><span class="muted" id="todayLabel"></span></div>
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-top"><span>Total reports</span><span class="stat-icon blue">▤</span></div><strong id="totalStat">0</strong><small>All citizen submissions</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Needs attention</span><span class="stat-icon orange">◷</span></div><strong id="activeStat">0</strong><small>Not yet resolved</small></article>
+          <article class="stat-card"><div class="stat-top"><span>High priority</span><span class="stat-icon red">⚑</span></div><strong id="urgentStat">0</strong><small>Critical and high reports</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Resolved</span><span class="stat-icon green">✓</span></div><strong id="resolvedStat">0</strong><small>Completed reports</small></article>
+        </div>
+        <div class="content-grid">
+          <section class="panel recent-panel"><div class="panel-head"><div><h3>Recent complaints</h3><p>Latest reports from your community</p></div><button class="text-btn" data-go="complaints">View all →</button></div><div id="recentList" class="report-list"></div></section>
+          <section class="panel insight-panel"><div class="panel-head"><div><h3>AI-generated insights</h3><p>Patterns worth paying attention to</p></div><span class="ai-chip">✦ AI</span></div><div id="insightList" class="insight-list"></div></section>
+        </div>
+        <section class="panel category-panel"><div class="panel-head"><div><h3>Reports by category</h3><p>Understand what residents are reporting</p></div></div><div id="categoryBars" class="category-bars"></div></section>
+      </section>
+
+      <section class="view" id="view-complaints">
+        <div class="section-heading"><div><div class="eyebrow">REPORT MANAGEMENT</div><h2>All complaints</h2><p class="muted">Review, prioritize and move reports toward resolution.</p></div><button class="primary-btn" data-go="submit">＋ Create report</button></div>
+        <div class="toolbar"><input id="searchInput" placeholder="⌕  Search reports, category or location..."><select id="statusFilter"><option value="">All statuses</option><option>Submitted</option><option>Under Review</option><option>Assigned</option><option>In Progress</option><option>Resolved</option></select><select id="priorityFilter"><option value="">All priorities</option><option>Critical</option><option>High</option><option>Medium</option><option>Low</option></select></div>
+        <div class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>REPORT</th><th>CATEGORY</th><th>LOCATION</th><th>AI PRIORITY</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="reportRows"></tbody></table></div><div id="emptyState" class="empty-state" hidden>No complaints match your search yet.</div></div>
+      </section>
+
+      <section class="view" id="view-map">
+        <div class="section-heading"><div><div class="eyebrow">GEOGRAPHIC INTELLIGENCE</div><h2>Issue map & hotspots</h2><p class="muted">Explore where reports are being raised. Add coordinates to place reports on the map.</p></div></div>
+        <div class="map-layout"><div class="panel map-panel"><div class="panel-head"><div><h3>Community issue map</h3><p>Demo map centered on Mysuru, Karnataka</p></div><span class="ai-chip">● Live data</span></div><div id="issueMap"></div></div><div class="panel hotspot-panel"><h3>Location hotspots</h3><p class="muted">Areas with repeated reports</p><div id="hotspotList"></div><div class="note-box">Hotspots are grouped by the location text entered in reports. Add latitude and longitude for map pins.</div></div></div>
+      </section>
+
+      <section class="view" id="view-submit">
+        <div class="section-heading"><div><div class="eyebrow">CITIZEN REPORTING</div><h2>Report a community issue</h2><p class="muted">Share the details. Our system will help route it to the right team.</p></div></div>
+        <div class="form-layout"><form id="reportForm" class="panel report-form">
+          <div class="form-title"><span class="form-icon">＋</span><div><h3>New complaint</h3><p>Most reports take less than a minute.</p></div></div>
+          <label>Your name <input name="citizenName" placeholder="e.g. A resident" value="Demo Citizen"></label>
+          <label>Issue title <input name="title" required maxlength="100" placeholder="e.g. Large pothole near the bus stop"></label>
+          <label>Describe the issue <textarea name="description" required rows="4" placeholder="Tell us what happened, how it affects people, and any useful details..."></textarea></label>
+          <div class="two-fields"><label>Category <select name="category"><option>Auto-detect</option><option>Road Damage</option><option>Drainage</option><option>Waste</option><option>Streetlight</option><option>Water Supply</option><option>Other</option></select></label><label>Severity <select name="severity"><option>Normal</option><option>Critical</option></select></label></div>
+          <label>Location / landmark <input name="location" required placeholder="e.g. Near City Bus Stand, Mysuru"></label>
+          <div class="two-fields"><label>Latitude (optional) <input name="latitude" type="number" step="any" placeholder="12.2958"></label><label>Longitude (optional) <input name="longitude" type="number" step="any" placeholder="76.6394"></label></div>
+          <label>Photo (optional) <input name="image" type="file" accept="image/*"></label>
+          <div class="privacy-note">ⓘ Please do not include personal or sensitive information in your report.</div>
+          <button class="primary-btn submit-btn" type="submit">Submit complaint <span>→</span></button><div id="formMessage" role="status"></div>
+        </form>
+        <aside class="form-aside"><div class="ai-preview"><div class="ai-spark">✦</div><h3>AI will help make sense of your report</h3><p>After submission, the prototype will:</p><ul><li>✓ Identify the likely category</li><li>✓ Create a short summary</li><li>✓ Check for similar reports</li><li>✓ Suggest a priority with reasons</li></ul><small>AI suggestions are decision support, not a replacement for human review.</small></div><div class="steps-card"><strong>What happens next?</strong><div>01 <span>Report received</span></div><div>02 <span>Reviewed and assigned</span></div><div>03 <span>Work begins</span></div><div>04 <span>Issue resolved</span></div></div></aside></div>
+      </section>
+
+      <section class="view" id="view-track">
+        <div class="section-heading"><div><div class="eyebrow">CITIZEN PORTAL</div><h2>Track your complaint</h2><p class="muted">Enter your report ID to see the latest status.</p></div></div>
+        <div class="panel track-panel"><form id="trackForm"><input name="reportId" placeholder="e.g. CA-1234567" required><button class="primary-btn">Track report</button></form><div id="trackResult"></div></div>
+      </section>
+      <footer> <span class="footer-logo">CivicAI</span> From complaints to action. <span>Prototype • Demo data only</span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast"></div>
+  <div class="modal-backdrop" id="detailModal"><div class="modal panel"><button class="modal-close" id="closeModal">×</button><div id="modalContent"></div></div></div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+
+
+<nav>
+    <a href="index.html">Home</a>
+
+    <a href="citizen_login.html">Citizen Login</a>
+
+    <a href="citizen_register.html">Citizen Register</a>
+
+    <a href="admin_login.html">Admin Login</a>
+</nav>
+ 

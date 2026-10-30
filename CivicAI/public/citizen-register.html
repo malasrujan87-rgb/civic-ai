@@ -1,0 +1,234 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CivicAI - Citizen Registration</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #123456, #2878a8);
+            padding: 20px;
+        }
+
+        .register-container {
+            background: white;
+            width: 100%;
+            max-width: 450px;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .logo {
+            text-align: center;
+            color: #1769aa;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #222;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #777;
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            margin: 13px 0 7px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #1769aa;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 22px;
+            border: none;
+            border-radius: 7px;
+            background: #1769aa;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #104d80;
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        a {
+            color: #1769aa;
+            text-decoration: none;
+        }
+
+        .back-home {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="register-container">
+
+        <div class="logo">CivicAI</div>
+
+        <h2>Citizen Registration</h2>
+
+        <p class="subtitle">
+            Create your account and make your voice heard
+        </p>
+
+        <form id="registerForm">
+
+            <label for="name">Full Name</label>
+            <input
+                type="text"
+                id="name"
+                placeholder="Enter your full name"
+                required
+            >
+
+            <label for="email">Email ID</label>
+            <input
+                type="email"
+                id="email"
+                placeholder="Enter your email address"
+                required
+            >
+
+            <label for="phone">Mobile Number</label>
+            <input
+                type="tel"
+                id="phone"
+                placeholder="Enter your mobile number"
+                pattern="[0-9]{10}"
+                maxlength="10"
+                required
+            >
+
+            <label for="password">Create Password</label>
+            <input
+                type="password"
+                id="password"
+                placeholder="Create a password"
+                minlength="6"
+                required
+            >
+
+            <label for="confirmPassword">Confirm Password</label>
+            <input
+                type="password"
+                id="confirmPassword"
+                placeholder="Re-enter your password"
+                minlength="6"
+                required
+            >
+
+            <button type="submit">
+                Create Account
+            </button>
+
+            <p class="message" id="message"></p>
+
+        </form>
+
+        <div class="login-link">
+            Already have an account?
+            <a href="citizen_login.html">Login Here</a>
+        </div>
+
+        <a href="index.html" class="back-home">
+            Back to Home
+        </a>
+
+    </div>
+
+    <script>
+        document.getElementById("registerForm")
+            .addEventListener("submit", function(event) {
+
+                event.preventDefault();
+
+                const password =
+                    document.getElementById("password").value;
+
+                const confirmPassword =
+                    document.getElementById("confirmPassword").value;
+
+                const message =
+                    document.getElementById("message");
+
+                if (password !== confirmPassword) {
+                    message.style.color = "red";
+                    message.textContent =
+                        "Passwords do not match!";
+                    return;
+                }
+
+                message.style.color = "green";
+                message.textContent =
+                    "Registration page is ready. Connect Firebase to create your account.";
+            });
+    </script>
+
+</body>
+</html>
+
+<p>Already have an account?</p>
+
+<a href="citizen_login.html">
+    Login Here
+</a>
+
+<br><br>
+
+<a href="index.html">Back to Home</a>

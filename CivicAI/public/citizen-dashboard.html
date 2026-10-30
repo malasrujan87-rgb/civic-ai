@@ -1,0 +1,498 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivicAI - Citizen Dashboard</title>
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body {
+            background: #f4f7fb;
+        }
+
+        .citizen-layout {
+            min-height: 100vh;
+        }
+
+        .citizen-header {
+            background: #173b63;
+            color: white;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .citizen-header h2 {
+            color: white;
+            margin: 0;
+        }
+
+        .citizen-header a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .citizen-main {
+            width: 90%;
+            max-width: 1200px;
+            margin: 35px auto;
+        }
+
+        .welcome {
+            margin-bottom: 25px;
+        }
+
+        .welcome h1 {
+            color: #173b63;
+            margin-bottom: 8px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        .summary-card h3 {
+            font-size: 15px;
+            color: #64748b;
+        }
+
+        .summary-card p {
+            font-size: 30px;
+            font-weight: bold;
+            color: #1769aa;
+            margin-top: 8px;
+        }
+
+        .panel {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .panel h2 {
+            text-align: left;
+            color: #173b63;
+            margin-bottom: 20px;
+        }
+
+        .complaint-form {
+            display: grid;
+            gap: 15px;
+        }
+
+        .complaint-form label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .complaint-form input,
+        .complaint-form select,
+        .complaint-form textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccd6e0;
+            border-radius: 7px;
+            font: inherit;
+        }
+
+        .complaint-form textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .primary-btn {
+            padding: 12px 20px;
+            background: #1769aa;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .primary-btn:hover {
+            background: #104f85;
+        }
+
+        .complaint-table {
+            overflow-x: auto;
+        }
+
+        .complaint-table table {
+            min-width: 650px;
+        }
+
+        .status-label {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .pending {
+            background: #fff2cc;
+            color: #956400;
+        }
+
+        .progress {
+            background: #dceeff;
+            color: #1769aa;
+        }
+
+        .resolved {
+            background: #d9f5e9;
+            color: #14734e;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #718096;
+            padding: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #718096;
+        }
+
+        @media(max-width: 600px) {
+            .citizen-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .citizen-main {
+                width: 94%;
+            }
+
+            .panel {
+                padding: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="citizen-layout">
+
+    <!-- HEADER -->
+    <header class="citizen-header">
+
+        <h2>CivicAI</h2>
+
+        <nav>
+            <a href="#dashboard">Dashboard</a> &nbsp;&nbsp;
+            <a href="#submit">Submit Complaint</a> &nbsp;&nbsp;
+            <a href="#tracking">Track Complaint</a> &nbsp;&nbsp;
+            <a href="index.html">Home</a>
+        </nav>
+
+        <button class="primary-btn" onclick="logout()">
+            Logout
+        </button>
+
+    </header>
+
+
+    <main class="citizen-main">
+
+        <!-- WELCOME -->
+        <section class="welcome" id="dashboard">
+            <h1>Welcome, Citizen!</h1>
+            <p>Report public issues and track their progress through CivicAI.</p>
+        </section>
+
+
+        <!-- SUMMARY -->
+        <section class="summary-grid">
+
+            <div class="summary-card">
+                <h3>Total Complaints</h3>
+                <p id="total">0</p>
+            </div>
+
+            <div class="summary-card">
+                <h3>Pending</h3>
+                <p id="pending">0</p>
+            </div>
+
+            <div class="summary-card">
+                <h3>In Progress</h3>
+                <p id="inProgress">0</p>
+            </div>
+
+            <div class="summary-card">
+                <h3>Resolved</h3>
+                <p id="resolved">0</p>
+            </div>
+
+        </section>
+
+
+        <!-- SUBMIT COMPLAINT -->
+        <section class="panel" id="submit">
+
+            <h2>Submit a New Complaint</h2>
+
+            <form class="complaint-form" id="complaintForm">
+
+                <div>
+                    <label for="citizenName">Your Name</label>
+                    <input
+                        type="text"
+                        id="citizenName"
+                        placeholder="Enter your name"
+                        required>
+                </div>
+
+                <div>
+                    <label for="category">Complaint Category</label>
+                    <select id="category" required>
+                        <option value="">Select category</option>
+                        <option value="Water">Water Problem</option>
+                        <option value="Road">Road Problem</option>
+                        <option value="Electricity">Electricity Problem</option>
+                        <option value="Sanitation">Sanitation Problem</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="location">Complaint Location</label>
+                    <input
+                        type="text"
+                        id="location"
+                        placeholder="Enter location"
+                        required>
+                </div>
+
+                <div>
+                    <label for="description">Complaint Description</label>
+                    <textarea
+                        id="description"
+                        placeholder="Explain your problem"
+                        required></textarea>
+                </div>
+
+                <button type="submit" class="primary-btn">
+                    Submit Complaint
+                </button>
+
+            </form>
+
+            <p id="message" role="status" aria-live="polite"></p>
+
+        </section>
+
+
+        <!-- TRACK COMPLAINT -->
+        <section class="panel" id="tracking">
+
+            <h2>My Complaints</h2>
+
+            <div class="complaint-table">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Complaint ID</th>
+                            <th>Category</th>
+                            <th>Location</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="complaintList">
+                        <tr>
+                            <td colspan="5" class="empty-message">
+                                No complaints submitted yet.
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer class="footer">
+        <p>© 2026 CivicAI - From Complaints to Action</p>
+    </footer>
+
+</div>
+
+
+<!-- JAVASCRIPT -->
+<script>
+
+    const STORAGE_KEY = "civicaiComplaints";
+
+    // Read complaints saved in this browser
+    function getComplaints() {
+        try {
+            const data = JSON.parse(localStorage.getItem(STORAGE_KEY));
+            return Array.isArray(data) ? data : [];
+        } catch (error) {
+            return [];
+        }
+    }
+
+    // Save complaints
+    function saveComplaints(complaints) {
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(complaints)
+        );
+    }
+
+    // Display citizen complaints and statistics
+    function updateDashboard() {
+
+        const complaints = getComplaints();
+
+        document.getElementById("total").textContent =
+            complaints.length;
+
+        document.getElementById("pending").textContent =
+            complaints.filter(c => (c.status || "Pending") === "Pending").length;
+
+        document.getElementById("inProgress").textContent =
+            complaints.filter(c => c.status === "In Progress").length;
+
+        document.getElementById("resolved").textContent =
+            complaints.filter(c => c.status === "Resolved").length;
+
+        const list = document.getElementById("complaintList");
+        list.innerHTML = "";
+
+        if (complaints.length === 0) {
+            list.innerHTML = `
+                <tr>
+                    <td colspan="5" class="empty-message">
+                        No complaints submitted yet.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        complaints.forEach(complaint => {
+
+            const row = document.createElement("tr");
+
+            const values = [
+                complaint.id || "N/A",
+                complaint.category || "Other",
+                complaint.location || "N/A",
+                complaint.description || "N/A"
+            ];
+
+            values.forEach(value => {
+                const cell = document.createElement("td");
+                cell.textContent = value;
+                row.appendChild(cell);
+            });
+
+            const statusCell = document.createElement("td");
+            const status = complaint.status || "Pending";
+
+            const badge = document.createElement("span");
+            badge.textContent = status;
+            badge.className = "status-label";
+
+            if (status === "Resolved") {
+                badge.classList.add("resolved");
+            } else if (status === "In Progress") {
+                badge.classList.add("progress");
+            } else {
+                badge.classList.add("pending");
+            }
+
+            statusCell.appendChild(badge);
+            row.appendChild(statusCell);
+
+            list.appendChild(row);
+        });
+    }
+
+    // Submit a complaint
+    document.getElementById("complaintForm")
+        .addEventListener("submit", function(event) {
+
+            event.preventDefault();
+
+            const name = document.getElementById("citizenName").value.trim();
+            const category = document.getElementById("category").value;
+            const location = document.getElementById("location").value.trim();
+            const description = document.getElementById("description").value.trim();
+
+            if (!name || !category || !location || !description) {
+                document.getElementById("message").textContent =
+                    "Please fill in all fields.";
+                return;
+            }
+
+            const complaints = getComplaints();
+
+            const newComplaint = {
+                id: "CAI-" + Date.now(),
+                name: name,
+                category: category,
+                department: category,
+                location: location,
+                description: description,
+                status: "Pending",
+                date: new Date().toLocaleDateString()
+            };
+
+            complaints.push(newComplaint);
+            saveComplaints(complaints);
+
+            document.getElementById("message").textContent =
+                "Complaint submitted successfully!";
+
+            document.getElementById("complaintForm").reset();
+
+            updateDashboard();
+        });
+
+    // Logout
+    function logout() {
+        window.location.href = "citizen_login.html";
+    }
+
+    // Load dashboard
+    updateDashboard();
+
+</script>
+
+</body>
+</html>
